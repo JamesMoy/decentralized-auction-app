@@ -8,12 +8,11 @@ export class table extends Component{
 
 	render(){
 		let auctionList = this.props.auctions.map((auction, i)=>
-			<tr key={i}>
+			<tr key={i} onClick = {this.handleChange.bind(this,auction.itemName)}>
 			<td>{auction.itemName}</td>
 			<td>{auction.highestBid}</td>
 			<td>{auction.leadingBidder}</td>
 			<td>{auction.timeRemaining}</td>
-			<td> onClick = {this.handleChange.bind(this,auction.itemName)}>{bid}</td>
 			</tr>
 		)
 
