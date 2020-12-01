@@ -16,7 +16,7 @@ contract AuctionHouse {
     
     Auction[] public auctions;
     
-    mapping(address => bool) public bidders;
+    mapping(address => uint) public bidders;
     
     mapping(address => bool) public auctionWinners;
     
@@ -65,11 +65,17 @@ contract AuctionHouse {
         require(auctions[auctionID].completed == false, 'Auction must be active');
         require(bidValue >= auctions[auctionID].minBid, 'Bid must be greater than minimum');
         auctions[auctionID].total += bidValue;
+        
+        if(bidders[msg.sender] > 0) {
+            require(bidValue > bidders[msg.sender], 'Next bid must be higher than previous bid');
+        }
+        
+        
         if(bidValue > auctions[auctionID].highestBid) {
             auctions[auctionID].highestBid = bidValue;
             auctions[auctionID].leadingBidder = msg.sender;
+            bidders[msg.sender] += bidValue;
         }
-        bidders[msg.sender] = true;
     }
     
     function stringToBytes32(string memory source) private pure returns (bytes32 result) {
