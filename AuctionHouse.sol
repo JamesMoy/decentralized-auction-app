@@ -8,16 +8,9 @@ contract AuctionHouse {
         uint minBid;
         uint highestBid;
         address payable leadingBidder;
-        timeRemaining t;
         address payable auctionCreator;
         uint total;
         bool completed;
-    }
-    
-    struct timeRemaining {
-        uint hour;
-        uint minute;
-        uint second;
     }
     
     Auction[] public auctions;
@@ -37,18 +30,11 @@ contract AuctionHouse {
     
     function createAuction(string memory name, uint bid, uint hour, uint minute, uint second) public {
         //establishes timestamp on the auction 
-        timeRemaining memory curTime = timeRemaining({
-            hour: hour,
-            minute: minute,
-            second: second
-        });
-        
         Auction memory newAuction = Auction({
             itemName: name,
             minBid: bid,
-            highestBid: 0,
+            highestBid: 0,  //keeps track of last winning bid- new bid must be higher >-handle double spending of bids
             leadingBidder: msg.sender,
-            t: curTime,
             auctionCreator: msg.sender,
             total: 0,
             completed: false
@@ -59,7 +45,7 @@ contract AuctionHouse {
     }
     
     function setAuctionWinner(uint auctionID, address payable winner) public {
-        require(auctions[auctionID].t.hour == 0 && auctions[auctionID].t.minute == 0 && auctions[auctionID].t.second == 0, 'Auction must be completed');
+        require(auctions[auctionID].completed == false, 'Auction must be active');
         auctions[auctionID].leadingBidder = winner;     //the current leading bidder will be the winner if the auction has expired
         auctionWinners[winner] = true;
         auctions[auctionID].completed = true;
@@ -80,9 +66,7 @@ contract AuctionHouse {
         auctions[auctionID].total += bidValue;
         
         //conditional check for updating last bid value
-        if(bidders[msg.sender] > 0) {
-            require(bidValue > bidders[msg.sender], 'Next bid must be higher than previous bid');
-        }
+        require(bidValue > bidders[msg.sender], 'Next bid must be higher than previous bid');  
         
         
         if(bidValue > auctions[auctionID].highestBid) {
