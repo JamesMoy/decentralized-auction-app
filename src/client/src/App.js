@@ -29,7 +29,7 @@ class App extends Component {
 
 
 	setTable() {
-		for(let i = 1; i < 11; i++) {
+		for(let i = 0; i < 10; i++) {
 			this.setState({
 				auction: this.state.auction.concat(ratingContract.methods.viewPreviousAuction(i).call()),
 			});
@@ -62,8 +62,7 @@ class App extends Component {
 
 
 	handleSubmit(){
-		ratingContract.methods.createAuction(this.state.cItem,this.state.cBid).send({from: account0});
-		this.setTable();
+		ratingContract.methods.createAuction(this.state.cItem, this.state.cBid).send({from: account0})
 	}
 
 
@@ -89,7 +88,7 @@ class App extends Component {
 						Set minimum bid amount:
 						<input type="number" value={this.state.cBid} onChange={event => this.handleChangeBid(event)} />
 					</label>
-					<input type="submit" value="Submit"/>
+					<input type="submit" value="Submit" />
 				</form>
 			</Modal>
 			<div className="current-table">
