@@ -3,9 +3,6 @@ import Table from './components/Table.js';
 import { ratingContract, account0 } from "./config";
 import Modal from 'react-modal';
 
-
-
-
 class App extends Component {
 	constructor(props){
 		super(props)
@@ -19,26 +16,25 @@ class App extends Component {
 			showModal: false,
 			cTime: '',
 			cItem: '',
-			cBid: 0
+			cBid: 0,
 		}
 		this.handleOpenModal = this.handleOpenModal.bind(this);
 		this.handleCloseModal = this.handleCloseModal.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
+		this.handleChangeItem =this.handleChangeItem.bind(this);
+		this.handleChangeBid = this.handleChangeBid.bind(this);
 		this.setTable();
 	}
 
 
+
 	setTable() {
-		for(let i = 0; i < 10; i++) {
-			this.setState({
-				auction: this.state.auction.concat(ratingContract.methods.viewPreviousAuction(i).call()),
-			});
+		let leng = ratingContract.methods.getAuctionCount().call();
+		for(let i = 0; i < leng; i++) {
+			let list = ratingContract.methods.viewPreviousAuction(i).call()
+			.then(console.log);
+			this.setState({auction: this.state.auction.push(list)});
 		}
-	}
-
-
-	updateTable(auction) {
-
 	}
 
 	handleOpenModal() {
@@ -49,25 +45,21 @@ class App extends Component {
 		this.setState({showModal: false});
 	}
 
-	handleChangeTime(event){
 
-	}
 	handleChangeItem(event){
 		this.setState({cItem: event.target.value});
 	}
+
 	handleChangeBid(event){
 		this.setState({cBid: event.target.value});
 	}
 
-
-
 	handleSubmit(){
-		ratingContract.methods.createAuction(this.state.cItem, this.state.cBid).send({from: account0})
+		ratingContract.methods.createAuction(this.state.cItem, this.state.cBid).send({from: account0, gas: 6700000});
 	}
 
 
 	render() {
-
 		return (
 			<div className="App">
 			<header>Freetrade</header>

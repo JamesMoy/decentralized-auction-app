@@ -56,8 +56,8 @@ contract AuctionHouse {
         return auctions[auctionID].highestBid;   //the current state of highest bid is the last winning bid
     }
 
-    function viewPreviousAuction(uint auctionID) public view returns(Auction memory) {
-        return auctions[auctionID];
+    function viewPreviousAuction(uint auctionID) public view returns(string memory, uint) {
+        return (auctions[auctionID].itemName, auctions[auctionID].highestBid);
     }
 
     function placeBid(uint auctionID, uint bidValue) public payable {
@@ -76,6 +76,9 @@ contract AuctionHouse {
         }
     }
 
+    function getAuctionCount() public view returns(uint) {
+    	return auctionCount;
+    }
     function stringToBytes32(string memory source) private pure returns (bytes32 result) {
         bytes memory tempEmptyStringTest = bytes(source);
         if (tempEmptyStringTest.length == 0) {

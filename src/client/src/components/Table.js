@@ -8,9 +8,6 @@ export class Table extends Component{
 		super(props);
 		this.state = {
 			auction: this.props.auction,
-			item: this.props.auction.itemName,
-			bid: this.props.auction.highestBid,
-			bidder: this.props.auction.leadingBidder,
 			time: {
 				hours: 1,
 				minutes: 1,
@@ -23,12 +20,11 @@ export class Table extends Component{
 	render() {
 		let auctionList = this.props.auction.map((auction, i)=>
 			<tr key={i}>
-			<td>{this.state.item}</td>
-			<td>{this.state.bid}</td>
-			<td>{this.state.bidder}</td>
+			<td>{this.state.auction[0]}</td>
+			<td>{this.state.auction[1]}</td>
 			<td><Countdown hours={this.state.time.hours} minutes={this.state.time.minutes} seconds={this.state.time.seconds}></Countdown></td>
 			</tr>
-		);
+		)
 
 		return (
 			<div>
@@ -38,7 +34,6 @@ export class Table extends Component{
 					<tr>
 						<th>Item</th>
 						<th>Highest Bid</th>
-						<th>Leading Bidder</th>
 						<th>Time Remaining</th>
 					</tr>
 					{auctionList}
