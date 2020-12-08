@@ -17,24 +17,27 @@ class App extends Component {
 			cTime: '',
 			cItem: '',
 			cBid: 0,
+			auctnum: 0
 		}
 		this.handleOpenModal = this.handleOpenModal.bind(this);
 		this.handleCloseModal = this.handleCloseModal.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleChangeItem =this.handleChangeItem.bind(this);
 		this.handleChangeBid = this.handleChangeBid.bind(this);
-		this.setTable();
 	}
 
 
 
-	setTable() {
-		let leng = ratingContract.methods.getAuctionCount().call();
+	async setTable() {
+		const leng = ratingContract.methods.getAuctionCount().call();
 		for(let i = 0; i < leng; i++) {
-			let list = ratingContract.methods.viewPreviousAuction(i).call()
-			.then(console.log);
-			this.setState({auction: this.state.auction.push(list)});
+			const list = ratingContract.methods.viewPreviousAuction(i).call();
+			this.setState({auction: this.state.auction.concat(list), auctnum: leng});
 		}
+	}
+
+	async componentDidMount() {
+		await this.setTable();
 	}
 
 	handleOpenModal() {
@@ -54,8 +57,9 @@ class App extends Component {
 		this.setState({cBid: event.target.value});
 	}
 
-	handleSubmit(){
-		ratingContract.methods.createAuction(this.state.cItem, this.state.cBid).send({from: account0, gas: 6700000});
+
+	handleSubmit(event){
+		ratingContract.methods.createAuction(this.state.cItem, this.state.cBid).send({from: account0, gas:670000});
 	}
 
 
@@ -66,15 +70,12 @@ class App extends Component {
 			<button onClick={this.handleOpenModal}>Create an Auction</button>
 			<Modal
 				isOpen={this.state.showModal}
+				ariaHideApp={false}
 			>
 				<form onSubmit={this.handleSubmit}>
 					<label>
 						Item Name:
 						<input type="text" value={this.state.cItem} onChange={event => this.handleChangeItem(event)} />
-					</label>
-					<label>
-						Set Time:
-						<input type="text" value={this.state.cTime} onChange={this.handleChange} />
 					</label>
 					<label>
 						Set minimum bid amount:
