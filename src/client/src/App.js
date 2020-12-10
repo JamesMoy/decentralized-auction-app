@@ -29,10 +29,11 @@ class App extends Component {
 
 
 	async setTable() {
-		const leng = ratingContract.methods.getAuctionCount().call();
+		let leng = await ratingContract.methods.getAuctionCount().call();
 		for(let i = 0; i < leng; i++) {
-			const list = ratingContract.methods.viewPreviousAuction(i).call();
-			this.setState({auction: this.state.auction.concat(list), auctnum: leng});
+			let list = await ratingContract.methods.viewPreviousAuction(i).call();
+			let tempList = {name: list[0], bid: list[1]};
+			this.setState({auction: this.state.auction.concat(tempList)});
 		}
 	}
 

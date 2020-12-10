@@ -20,8 +20,8 @@ export class Table extends Component{
 	render() {
 		let auctionList = this.props.auction.map((auction, i)=>
 			<tr key={i}>
-			<td>{this.props.auction[0]}</td>
-			<td>{this.props.auction[1]}</td>
+			<td>{this.props.auction[i].name}</td>
+			<td>{this.props.auction[i].bid}</td>
 			<td><Countdown hours={this.state.time.hours} minutes={this.state.time.minutes} seconds={this.state.time.seconds}></Countdown></td>
 			</tr>
 		)
