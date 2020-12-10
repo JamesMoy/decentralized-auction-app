@@ -61,16 +61,10 @@ contract AuctionHouse {
     function placeBid(uint auctionID, uint bidValue) public payable {
         require(auctions[auctionID].completed == false, 'Auction must be active');
         require(bidValue >= auctions[auctionID].bid, 'Bid must be greater than starting bid');
+        
         auctions[auctionID].total += bidValue;
-        
-        //conditional check for updating last bid value
-        require(bidValue > bidders[msg.sender], 'Next bid must be higher than previous bid');  
-        
-        
-        if(bidValue > auctions[auctionID].bid) {
-            auctions[auctionID].bid = bidValue;
-            auctions[auctionID].leadingBidder = msg.sender;
-            bidders[msg.sender] += bidValue;
-        }
+        auctions[auctionID].bid = bidValue;
+        auctions[auctionID].leadingBidder = msg.sender;
+        bidders[msg.sender] += bidValue;
     }
 }
