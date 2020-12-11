@@ -1,6 +1,5 @@
 import React, { Component }  from 'react';
-import Countdown from './Countdown.js';
-
+import Timer from 'react-compound-timer';
 
 
 export class Table extends Component{
@@ -22,7 +21,21 @@ export class Table extends Component{
 			<tr key={i}>
 			<td>{this.props.auction[i].name}</td>
 			<td>{this.props.auction[i].bid}</td>
-			<td><Countdown hours={this.state.time.hours} minutes={this.state.time.minutes} seconds={this.state.time.seconds}></Countdown></td>
+			<td>
+			<Timer
+				initialTime={60000}
+				direction="backward"
+				lastUnit="h"
+			>
+				{() => (
+					<React.Fragment>
+						<Timer.Hours />:
+						<Timer.Minutes />:
+						<Timer.Seconds />
+					</React.Fragment>
+				)}
+			</Timer>
+			</td>
 			</tr>
 		)
 
