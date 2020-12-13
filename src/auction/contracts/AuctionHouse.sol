@@ -9,6 +9,9 @@ contract AuctionHouse {
         address payable auctionCreator;
         uint bid;
         uint total;
+	uint h;
+	uint m;
+	uint s;
         bool completed;
     }
 
@@ -27,7 +30,7 @@ contract AuctionHouse {
         manager = msg.sender;
     }
 
-    function createAuction(string memory name, uint bidStart) public {
+    function createAuction(string memory name, uint bidStart, uint shours, uint sminutes, uint sseconds) public {
         //establishes timestamp on the auction
         Auction memory newAuction = Auction({
             itemName: name,
@@ -35,6 +38,9 @@ contract AuctionHouse {
             auctionCreator: msg.sender,
             bid: bidStart,
             total: 0,
+	    h: shours,
+	    m: sminutes,
+	    s: sseconds,
             completed: false
         });
 
@@ -54,8 +60,8 @@ contract AuctionHouse {
         return auctions[auctionID].bid;   //the current state of highest bid is the last winning bid
     }
 
-    function viewPreviousAuction(uint auctionID) public view returns(string memory name, uint bid) {
-        return (auctions[auctionID].itemName, auctions[auctionID].bid);
+    function viewPreviousAuction(uint auctionID) public view returns(string memory name, uint bid, uint hour, uint minute, uint second) {
+        return (auctions[auctionID].itemName, auctions[auctionID].bid, auctions[auctionID].h, auctions[auctionID].m, auctions[auctionID].s);
     }
 
     function getAuctionCount() public view returns(uint) {
@@ -70,5 +76,11 @@ contract AuctionHouse {
         auctions[auctionID].bid = bidValue;
         auctions[auctionID].leadingBidder = msg.sender;
         bidders[msg.sender] += bidValue;
+    }
+
+    function updateTime(uint auctionID, uint hs, uint ms, uint ss) public {
+	auctions[auctionID].h = hs;
+	auctions[auctionID].m = ms;
+	auctions[auctionID].s = ss;
     }
 }

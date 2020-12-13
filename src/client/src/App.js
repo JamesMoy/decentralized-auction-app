@@ -8,22 +8,20 @@ class App extends Component {
 		super(props)
 		this.state = {
 			auction: [],
-			time: {
-				hours: 0,
-				minutes: 0,
-				seconds: 0
-			},
 			showModal: false,
-			cTime: '',
+			cTime: "00:00:00",
 			cItem: '',
 			cBid: 0,
-			auctnum: 0
+			cHour: 0,
+			cMinute: 0,
+			cSecond: 0
 		}
 		this.handleOpenModal = this.handleOpenModal.bind(this);
 		this.handleCloseModal = this.handleCloseModal.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.handleChangeItem =this.handleChangeItem.bind(this);
 		this.handleChangeBid = this.handleChangeBid.bind(this);
+		this.handleChangeTime = this.handleChangeTime.bind(this);
 	}
 
 
@@ -32,7 +30,7 @@ class App extends Component {
 		let leng = await ratingContract.methods.getAuctionCount().call();
 		for(let i = 0; i < leng; i++) {
 			let list = await ratingContract.methods.viewPreviousAuction(i).call();
-			let tempList = {name: list[0], bid: list[1]};
+			let tempList = {name: list[0], bid: list[1], hours: list[2], minutes: list[3], seconds: list[4]};
 			this.setState({auction: this.state.auction.concat(tempList)});
 		}
 	}
@@ -40,6 +38,10 @@ class App extends Component {
 	async componentDidMount() {
 		await this.setTable();
 	}
+
+	//getSnapshotBeforeUpdate(prevProps, prevState) {
+	//	ratingContract.methods.updateTime(h,s,m).send({from: account0, gas:670000});
+	//}
 
 	handleOpenModal() {
 		this.setState({showModal: true});
@@ -58,9 +60,17 @@ class App extends Component {
 		this.setState({cBid: event.target.value});
 	}
 
+	handleChangeTime(event){
+		this.setState({cTime: event.target.value});
+		let h = parseInt(this.state.cTime.substring(0,2), 10);
+		let m = parseInt(this.state.cTime.substring(3,5), 10);
+		let s = parseInt(this.state.cTime.substring(6), 10);
+		this.setState({cHour: h, cMinute: m, cSecond: s});
+	}
+
 
 	handleSubmit(event){
-		ratingContract.methods.createAuction(this.state.cItem, this.state.cBid).send({from: account0, gas:670000});
+		ratingContract.methods.createAuction(this.state.cItem, this.state.cBid, this.state.cHour, this.state.cMinute, this.state.cSecond).send({from: account0, gas:670000});
 	}
 
 
@@ -77,6 +87,10 @@ class App extends Component {
 					<label>
 						Item Name:
 						<input type="text" value={this.state.cItem} onChange={event => this.handleChangeItem(event)} />
+					</label>
+					<label>
+						Set time:
+						<input type="text" value={this.state.cTime} onChange={event => this.handleChangeTime(event)} />
 					</label>
 					<label>
 						Set minimum bid amount:
