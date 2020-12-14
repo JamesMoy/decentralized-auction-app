@@ -9,6 +9,7 @@ class App extends Component {
 		this.state = {
 			auction: [],
 			showModal: false,
+			showBidModal: false,
 			cTime: "00:00:00",
 			cItem: '',
 			cBid: 0,
@@ -22,6 +23,9 @@ class App extends Component {
 		this.handleChangeItem =this.handleChangeItem.bind(this);
 		this.handleChangeBid = this.handleChangeBid.bind(this);
 		this.handleChangeTime = this.handleChangeTime.bind(this);
+		this.handleOpenModal = this.handleOpenModal.bind(this);
+		this.handleCloseModal = this.handleCloseModal.bind(this);
+		this.bid = this.bid.bind(this);
 	}
 
 
@@ -52,6 +56,14 @@ class App extends Component {
 	}
 
 
+	handleOpenBidModal() {
+		this.setState({showBidModal: true});
+	}
+
+	handleCloseBidModal() {
+		this.setState({showBidModal: false});
+	}
+
 	handleChangeItem(event){
 		this.setState({cItem: event.target.value});
 	}
@@ -69,10 +81,14 @@ class App extends Component {
 	}
 
 
-	handleSubmit(event){
+	handleSubmit(){
 		ratingContract.methods.createAuction(this.state.cItem, this.state.cBid, this.state.cHour, this.state.cMinute, this.state.cSecond).send({from: account0, gas:670000});
 	}
 
+
+	bid(auction, bidAmount){
+		ratingContract.methods.placeBid(auction, bidAmount).send({from: account0, gas:670000});
+	}
 
 	render() {
 		return (
@@ -100,7 +116,7 @@ class App extends Component {
 				</form>
 			</Modal>
 			<div className="current-table">
-			<Table auction={this.state.auction}/>
+			<Table auction={this.state.auction} bid={this.bid} />
 			</div>
 			</div>
 		);
