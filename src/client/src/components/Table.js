@@ -39,6 +39,10 @@ export class Table extends Component{
 		this.setState({bidAmount: event.target.value, i: inp});
 	}
 
+	handleEndAuction(event, inp) {
+		this.props.setWinner(inp);
+	}
+
 
 	render() {
 		let auctionList = this.props.auction.map((auction, i)=>
@@ -57,7 +61,7 @@ export class Table extends Component{
 					//},
 					{
 						time: 0,
-						callback: () => ratingContract.methods.updateTime(i, 0, 0, 0),
+						callback: event => this.handleEndAuction(event,i),
 					}
 				]}
 			>
