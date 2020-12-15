@@ -10,13 +10,13 @@ class App extends Component {
 			auction: [],
 			showModal: false,
 			showBidModal: false,
-			cTime: "00:00:00",
+			cTime: "Enter Time as hh:mm:ss",
 			cItem: '',
 			cBid: 0,
 			cHour: 0,
 			cMinute: 0,
 			cSecond: 0
-		}
+		};
 		this.handleOpenModal = this.handleOpenModal.bind(this);
 		this.handleCloseModal = this.handleCloseModal.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -81,7 +81,7 @@ class App extends Component {
 	}
 
 
-	handleSubmit(){
+	handleSubmit(event){
 		ratingContract.methods.createAuction(this.state.cItem, this.state.cBid, this.state.cHour, this.state.cMinute, this.state.cSecond).send({from: account0, gas:670000});
 	}
 

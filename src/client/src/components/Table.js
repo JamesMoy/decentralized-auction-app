@@ -1,6 +1,6 @@
 import React, { Component }  from 'react';
 import Timer from 'react-compound-timer';
-//import { ratingContract, account0 } from '../config';
+import { ratingContract, account0 } from '../config';
 import Modal from 'react-modal';
 
 
@@ -11,7 +11,8 @@ export class Table extends Component{
 		this.state = {
 			auction: [this.props.auction],
 			showModal: false,
-			bidAmount: 0
+			bidAmount: 0,
+			i: 0
 		};
 		this.handleOpenModal = this.handleOpenModal.bind(this);
 		this.handleCloseModal = this.handleCloseModal.bind(this);
@@ -29,13 +30,13 @@ export class Table extends Component{
 	}
 
 
-	handleChange(auction) {
-		this.props.bid(auction, this.state.bidAmount);
+	handleChange(event) {
+		this.props.bid(this.state.i, this.state.bidAmount);
 	}
 
 
-	handleChangeBid(event) {
-		this.setState({bidAmount: event.target.value});
+	handleChangeBid(event, inp) {
+		this.setState({bidAmount: event.target.value, i: inp});
 	}
 
 
@@ -50,15 +51,15 @@ export class Table extends Component{
 				initialTime={ 60000 * 60 * this.props.auction[i].hours + this.props.auction[i].minutes * 60000 + this.props.auction[i].seconds * 1000}
 				direction="backward"
 				lastUnit="h"
-				//checkpoints={[
+				checkpoints={[
 					//{
 					//	callback: ratingContract.methods.updateTime(i, Timer.Hours, Timer.Minutes, Timer.Seconds).send({from: account0, gas:670000}),
 					//},
-				//	{
-				//		time: 0,
-				//		callback: ratingContract.methods.setAuctionWinner(i, account0).send({from: account0, gas:670000}),
-				//	}
-				//]}
+					{
+						time: 0,
+						callback: () => ratingContract.methods.updateTime(i, 0, 0, 0),
+					}
+				]}
 			>
 				{() => (
 					<React.Fragment>
@@ -74,10 +75,10 @@ export class Table extends Component{
 				isOpen={this.state.showModal}
 				ariaHideApp={false}
 			>
-				<form onSubmit={this.handleChange(i)}>
+				<form onSubmit={this.handleChange}>
 					<label>
 						Enter bid amount:
-						<input type="number" value={this.state.bidAmount} onChange={event => this.handleChangeBid(event)} />
+						<input type="number" value={this.state.bidAmount} onChange={event => this.handleChangeBid(event,i)} />
 					</label>
 						<input type="submit" value="Submit" />
 				</form>
